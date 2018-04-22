@@ -59,14 +59,14 @@ fi;
 
 viewSources() {
 	echo "For $1, the available sources in $language are: "
-	curl -sS -X GET -H "Content-Type: application/json" "https://newsapi.org/v1/sources?category=$1&language=$language" | jq '.sources[].id'
+	curl -sS -X GET -H "Content-Type: application/json" "https://newsapi.org/v1/sources?category=$1&language=$language&apiKey=$apiKey" | jq '.sources[].id'
 }
 
 acceptValidCategory() {
-	echo "Categories: business, entertainment, gaming, general, music, politics, science-and-nature, sport, technology."
+	echo "Categories: business, entertainment, gaming, general, music, politics, science-and-nature, sports, technology."
 	read -p "Enter category: " category
 	case $category in
-		business|entertainment|gaming|general|music|politics|science-and-nature|sport|technology)
+		business|entertainment|gaming|general|music|politics|science-and-nature|sports|technology)
 			;;
 		*)
 			echo "Invalid category. Try again"
@@ -98,7 +98,7 @@ viewArticle() {
 		source_id=$(echo "\"$source_id\"")
 	fi;	
 	echo "Available sortBy orders are: "
-	curl -s -X GET -H "Content-Type: application/json" "https://newsapi.org/v1/sources?category=$category&language=$language" | jq --arg source_id "$source_id" ".sources[]|select(.id==$source_id)|.sortBysAvailable"
+	curl -s -X GET -H "Content-Type: application/json" "https://newsapi.org/v1/sources?category=$category&language=$language&apiKey=$apiKey" | jq --arg source_id "$source_id" ".sources[]|select(.id==$source_id)|.sortBysAvailable"
 	read -p "Enter sort by: " sortBy
 	source_id=$(sed 's/"//g' <<< $source_id) 
 	curl -s -X GET -H "Content-Type: application/json" "https://newsapi.org/v1/articles?apiKey=$apiKey&source=$source_id&sortBy=$sortBy" | jq '.articles[]|.title,.author,.description'
